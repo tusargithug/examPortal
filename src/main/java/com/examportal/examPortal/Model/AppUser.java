@@ -1,4 +1,4 @@
-package com.examportal.examPortal;
+package com.examportal.examPortal.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,8 +11,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AppUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
 
 }
