@@ -1,22 +1,41 @@
 package com.examportal.examPortal.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-public class AppUser extends BaseEntity{
-private String firstName;
-private String lastName;
-private String rollNo;
-private String mobileNo;
-private String email;
-private String password;
-private String confirmPassword;
+@NoArgsConstructor
+public class AppUser extends BaseEntity {
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "roll_no")
+    private String rollNo;
+
+    @Column(name = "mobile_no")
+    private String mobileNo;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "confirm_password")
+    private String confirmPassword;
+
+    @Column(name = "new_password")
+    private String newPassword;
+
+
+    @Column(name = "user_name",unique = true)
+    private String userName;
 
 }
