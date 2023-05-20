@@ -1,6 +1,5 @@
 package com.examportal.examPortal.Dto;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,5 +24,7 @@ public class RegisterDto {
     private String confirmPassword;
 
     private String userName;
+
+    private String roleType;
 
 }

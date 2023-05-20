@@ -1,5 +1,6 @@
 package com.examportal.examPortal.Model;
 
+import com.examportal.examPortal.Enum.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,9 @@ public class AppUser extends BaseEntity {
     private String newPassword;
 
 
-    @Column(name = "user_name",unique = true)
+    @Column(name = "user_name", unique = true)
     private String userName;
-
+    @Enumerated
+    @Column(name = "role", nullable = false)
+    private Role roleType;
 }

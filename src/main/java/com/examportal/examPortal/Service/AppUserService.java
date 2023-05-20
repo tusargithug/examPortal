@@ -4,5 +4,5 @@ import com.examportal.examPortal.Dto.RegisterDto;
 import com.examportal.examPortal.Generic.GenericResponse;
 
 public interface AppUserService {
-    public GenericResponse addUser(RegisterDto registerDto);
+    public GenericResponse registration(RegisterDto registerDto);
 }
