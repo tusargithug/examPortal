@@ -17,7 +17,7 @@ public class AppUserController {
     @Autowired
     private AppUserService appUserService;
 
-    @PostMapping("registration")
+    @PostMapping("/registration")
     public GenericResponse registration(@RequestBody RegisterDto registerDto) {
         return appUserService.registration(registerDto);
     }

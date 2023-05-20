@@ -25,6 +25,6 @@ public class RegisterDto {
 
     private String userName;
 
-    private String roleType;
+   // private String roleType;
 
 }

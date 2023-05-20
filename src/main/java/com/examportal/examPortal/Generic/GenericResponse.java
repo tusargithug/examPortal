@@ -14,23 +14,23 @@ public class GenericResponse {
 
     private Object data;
 
-    public GenericResponse(HttpStatus code, String message, String data) {
-        this.status =new com.examportal.examPortal.Generic.ResponseStatus(code.value(), message);
-        this.data = data;
-    }
+//    public GenericResponse(HttpStatus code, String message, String data) {
+//        this.status =new com.examportal.examPortal.Generic.ResponseStatus(code.value(), message);
+//        this.data = data;
+//    }
 
     public GenericResponse(HttpStatus code, String data) {
         this.status = new com.examportal.examPortal.Generic.ResponseStatus(code.value());
         this.data = data;
     }
 
-    public GenericResponse(HttpStatus code, Object data) {
-        this.status = new com.examportal.examPortal.Generic.ResponseStatus(code.value());
-        this.data = data;
-
-    }
-
-    public GenericResponse(int code, String message) {
-        this.status = new com.examportal.examPortal.Generic.ResponseStatus(code, message);
-    }
+//    public GenericResponse(HttpStatus code, Object data) {
+//        this.status = new com.examportal.examPortal.Generic.ResponseStatus(code.value());
+//        this.data = data;
+//
+//    }
+//
+//    public GenericResponse(int code, String message) {
+//        this.status = new com.examportal.examPortal.Generic.ResponseStatus(code, message);
+//    }
 }
