@@ -10,6 +10,13 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class AppUser {
+public class AppUser extends BaseEntity{
+private String firstName;
+private String lastName;
+private String rollNo;
+private String mobileNo;
+private String email;
+private String password;
+private String confirmPassword;
 
 }
