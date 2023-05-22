@@ -1,6 +1,7 @@
 package com.examportal.examPortal.Model;
 
 
+import com.examportal.examPortal.Enum.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -39,7 +40,7 @@ public class AppUser extends BaseEntity {
 
     @Column(name = "user_name", unique = true)
     private String userName;
-//    @Enumerated
-//    @Column(name = "role", nullable = false)
-//    private Role roleType;
+    @Enumerated
+    @Column(name = "role", nullable = false)
+    private Role roleType;
 }

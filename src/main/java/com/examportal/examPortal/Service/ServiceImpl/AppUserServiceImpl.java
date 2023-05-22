@@ -1,6 +1,7 @@
 package com.examportal.examPortal.Service.ServiceImpl;
 
 import com.examportal.examPortal.Dto.RegisterDto;
+import com.examportal.examPortal.Enum.Role;
 import com.examportal.examPortal.Generic.GenericResponse;
 import com.examportal.examPortal.Model.AppUser;
 
@@ -33,7 +34,7 @@ public class AppUserServiceImpl implements AppUserService {
         user.setPassword(registerDto.getPassword());
         user.setConfirmPassword(registerDto.getConfirmPassword());
         user.setUserName(registerDto.getUserName());
-       // user.setRoleType(Role.valueOf(registerDto.getRoleType()));
+        user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
 
 

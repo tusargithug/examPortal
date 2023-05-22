@@ -1,5 +1,5 @@
-//package com.examportal.examPortal.Enum;
-//
-//public enum Role {
-//    ADMIN,USER
-//}
+package com.examportal.examPortal.Enum;
+
+public enum Role {
+    ADMIN,USER
+}
