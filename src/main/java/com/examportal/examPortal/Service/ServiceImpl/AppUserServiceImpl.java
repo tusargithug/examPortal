@@ -23,9 +23,16 @@ public class AppUserServiceImpl implements AppUserService {
         if (appUserOptional.isPresent()) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid User Name");
         }
-
-
+        String formatForFirstName = "^[A-Z][a-z]*$";
+        String formatForLastName = "^[A-Z][a-z]*$";
+        if(!registerDto.getFirstName().matches(formatForFirstName)){
+            return new GenericResponse(HttpStatus.BAD_REQUEST,"Invalid first name format");
+        }
+        if(!registerDto.getLastName().matches(formatForLastName)){
+            return new GenericResponse(HttpStatus.BAD_REQUEST,"Invalid last name format");
+        }
         AppUser user = new AppUser();
+
         user.setFirstName(registerDto.getFirstName());
         user.setLastName(registerDto.getLastName());
         user.setRollNo(registerDto.getRollNo());
