@@ -10,22 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 @Service
 public class AppUserServiceImpl implements AppUserService {
     @Autowired
-    private AppUserRepo UserRepo;
+    private AppUserRepo userRepo;
 
     @Override
     public GenericResponse registration(RegisterDto registerDto) {
-        Optional<AppUser> appUserOptional = UserRepo.findByUserName(registerDto.getUserName());
+        Optional<AppUser> appUserOptional = userRepo.findByUserName(registerDto.getUserName());
         if (appUserOptional.isPresent()) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid User Name");
         }
 
-        List<AppUser> appUserList=new ArrayList<>();
+
         AppUser user = new AppUser();
         user.setFirstName(registerDto.getFirstName());
         user.setLastName(registerDto.getLastName());
@@ -36,7 +34,7 @@ public class AppUserServiceImpl implements AppUserService {
         user.setConfirmPassword(registerDto.getConfirmPassword());
         user.setUserName(registerDto.getUserName());
        // user.setRoleType(Role.valueOf(registerDto.getRoleType()));
-        appUserList.add(user);
+        userRepo.save(user);
 
 
         return new GenericResponse(HttpStatus.OK, "Registration done");

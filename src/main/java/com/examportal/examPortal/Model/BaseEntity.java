@@ -5,16 +5,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
 
 @MappedSuperclass
 @Setter
