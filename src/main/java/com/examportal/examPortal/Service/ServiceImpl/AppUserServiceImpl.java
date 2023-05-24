@@ -1,5 +1,6 @@
 package com.examportal.examPortal.Service.ServiceImpl;
 
+import com.examportal.examPortal.Dto.LogInDto;
 import com.examportal.examPortal.Dto.RegisterDto;
 import com.examportal.examPortal.Enum.Role;
 import com.examportal.examPortal.Generic.GenericResponse;
@@ -19,8 +20,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public GenericResponse registration(RegisterDto registerDto) {
-        Optional<AppUser> appUserOptional = userRepo.findByUserName(registerDto.getUserName());
-        if (appUserOptional.isPresent()) {
+        Long countByUserName = userRepo.countByUserName(registerDto.getUserName());
+        if (countByUserName>=1) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid User Name");
         }
         String formatForFirstName = "^[A-Z][a-z]*$";
@@ -43,8 +44,20 @@ public class AppUserServiceImpl implements AppUserService {
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
-
-
         return new GenericResponse(HttpStatus.OK, "Registration done");
+    }
+
+    @Override
+    public GenericResponse logIn(LogInDto logInDto) {
+        Optional<AppUser> appUserOptional = userRepo.findByUserNameOrEmail(logInDto.getUserName(), logInDto.getEmail());
+
+        if (appUserOptional.isEmpty()) {
+            return new GenericResponse(HttpStatus.BAD_REQUEST,"Invalid user ");
+        }
+        AppUser user=appUserOptional.get();
+        if(user.getPassword().matches(logInDto.getPassword())){
+            return new GenericResponse(HttpStatus.OK,"Log in successfully");
+        }
+        return null;
     }
 }
