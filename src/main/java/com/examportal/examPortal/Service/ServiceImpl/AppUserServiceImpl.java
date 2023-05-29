@@ -39,8 +39,11 @@ public class AppUserServiceImpl implements AppUserService {
         user.setRollNo(registerDto.getRollNo());
         user.setMobileNo(registerDto.getMobileNo());
         user.setEmail(registerDto.getEmail());
-        user.setPassword(registerDto.getPassword());
-        user.setConfirmPassword(registerDto.getConfirmPassword());
+       // user.setPassword(registerDto.getPassword());
+       // user.setConfirmPassword(registerDto.getConfirmPassword());
+        if(registerDto.getPassword().matches(registerDto.getConfirmPassword())){
+            user.setPassword(registerDto.getPassword());
+        }
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
