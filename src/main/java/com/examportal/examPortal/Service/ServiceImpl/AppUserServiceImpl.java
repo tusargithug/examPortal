@@ -44,6 +44,9 @@ public class AppUserServiceImpl implements AppUserService {
         if(registerDto.getPassword().matches(registerDto.getConfirmPassword())){
             user.setPassword(registerDto.getPassword());
         }
+        else{
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Password mismatch");
+        }
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
@@ -55,10 +58,10 @@ public class AppUserServiceImpl implements AppUserService {
         Optional<AppUser> appUserOptional = userRepo.findByUserNameOrEmail(logInDto.getUserName(), logInDto.getEmail());
 
         if (appUserOptional.isEmpty()) {
-            return new GenericResponse(HttpStatus.BAD_REQUEST,"Invalid user ");
+            return new GenericResponse(HttpStatus.BAD_REQUEST,"Invalid username or password ");
         }
         AppUser user=appUserOptional.get();
-        if(user.getPassword().matches(logInDto.getPassword())){
+        if(user.getPassword().equals(logInDto.getPassword())){
             return new GenericResponse(HttpStatus.OK,"Log in successfully");
         }
         return null;
