@@ -9,6 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RegisterDto {
 
+    private String id;
+
     private String firstName;
 
     private String lastName;

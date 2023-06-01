@@ -8,4 +8,6 @@ public interface AppUserService {
     public GenericResponse registration(RegisterDto registerDto);
 
     public  GenericResponse logIn(LogInDto logInDto);
+
+    public GenericResponse updateUser(RegisterDto registerDto);
 }
