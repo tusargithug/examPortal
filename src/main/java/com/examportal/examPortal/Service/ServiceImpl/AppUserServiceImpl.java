@@ -1,5 +1,6 @@
 package com.examportal.examPortal.Service.ServiceImpl;
 
+import com.examportal.examPortal.Dto.ChangePasswordDto;
 import com.examportal.examPortal.Dto.LogInDto;
 import com.examportal.examPortal.Dto.RegisterDto;
 import com.examportal.examPortal.Enum.Role;
@@ -83,5 +84,26 @@ public class AppUserServiceImpl implements AppUserService {
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
         return new GenericResponse(HttpStatus.OK, "Profile update successfully");
+    }
+
+    @Override
+    public GenericResponse changePassword(ChangePasswordDto changePasswordDto) {
+        Optional<AppUser> appUserOptional = userRepo.findById(changePasswordDto.getId());
+        if (appUserOptional.isEmpty()) {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid User to change password");
+        }
+        AppUser user = appUserOptional.get();
+        if (user.getPassword().equals(changePasswordDto.getOldPassword())) {
+            if (changePasswordDto.getNewPassword().equals(changePasswordDto.getConfirmPassword())) {
+                user.setPassword(changePasswordDto.getNewPassword());
+                userRepo.save(user);
+                return new GenericResponse(HttpStatus.OK, "Password change successfully done");
+            } else {
+                return new GenericResponse(HttpStatus.BAD_REQUEST, "Password Mismatch");
+            }
+        } else {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Wrong password");
+        }
+
     }
 }
