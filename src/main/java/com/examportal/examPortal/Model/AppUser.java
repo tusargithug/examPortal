@@ -31,12 +31,6 @@ public class AppUser extends BaseEntity {
     @Column(name = "password")
     private String password;
 
-//    @Column(name = "confirm_password")
-//    private String confirmPassword;
-
-//    @Column(name = "new_password")
-//    private String newPassword;
-
     @Column(name = "user_name", unique = true)
     private String userName;
 
