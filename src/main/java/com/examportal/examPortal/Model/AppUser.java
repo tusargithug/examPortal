@@ -37,10 +37,13 @@ public class AppUser extends BaseEntity {
 //    @Column(name = "new_password")
 //    private String newPassword;
 
-
     @Column(name = "user_name", unique = true)
     private String userName;
+
     @Enumerated
     @Column(name = "role", nullable = false)
     private Role roleType;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
 }

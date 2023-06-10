@@ -1,8 +1,10 @@
 package com.examportal.examPortal.Service.ServiceImpl;
 
 import com.examportal.examPortal.Dto.ChangePasswordDto;
+import com.examportal.examPortal.Dto.DeleteDto;
 import com.examportal.examPortal.Dto.LogInDto;
 import com.examportal.examPortal.Dto.RegisterDto;
+import com.examportal.examPortal.Enum.DeleteType;
 import com.examportal.examPortal.Enum.Role;
 import com.examportal.examPortal.Generic.GenericResponse;
 import com.examportal.examPortal.Model.AppUser;
@@ -105,5 +107,16 @@ public class AppUserServiceImpl implements AppUserService {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Wrong password");
         }
 
+    }
+
+    @Override
+    public GenericResponse deleteById(DeleteDto deleteDto) {
+        Optional<AppUser> appUserOptional = userRepo.findById(deleteDto.getId());
+        if(appUserOptional.isEmpty()){
+            return new GenericResponse(HttpStatus.BAD_REQUEST,"Invalid user");
+        }
+        AppUser user = appUserOptional.get();
+
+        return null;
     }
 }
