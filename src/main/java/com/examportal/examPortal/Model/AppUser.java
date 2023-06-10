@@ -39,5 +39,5 @@ public class AppUser extends BaseEntity {
     private Role roleType;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private Boolean isActive=Boolean.TRUE;
 }

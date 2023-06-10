@@ -2,6 +2,7 @@ package com.examportal.examPortal.Controller;
 
 import com.examportal.examPortal.Constant.AppConstant;
 import com.examportal.examPortal.Dto.ChangePasswordDto;
+import com.examportal.examPortal.Dto.DeleteDto;
 import com.examportal.examPortal.Dto.LogInDto;
 import com.examportal.examPortal.Dto.RegisterDto;
 import com.examportal.examPortal.Generic.GenericResponse;
@@ -34,5 +35,10 @@ public class AppUserController {
     @PostMapping("/change-password")
     public GenericResponse changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
         return appUserService.changePassword(changePasswordDto);
+    }
+
+    public GenericResponse deleteById(@RequestBody DeleteDto deleteDto) {
+
+        return appUserService.deleteById(deleteDto);
     }
 }

@@ -112,11 +112,17 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public GenericResponse deleteById(DeleteDto deleteDto) {
         Optional<AppUser> appUserOptional = userRepo.findById(deleteDto.getId());
-        if(appUserOptional.isEmpty()){
-            return new GenericResponse(HttpStatus.BAD_REQUEST,"Invalid user");
+        if (appUserOptional.isEmpty()) {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user");
         }
         AppUser user = appUserOptional.get();
-
-        return null;
+        DeleteType deleteType = DeleteType.valueOf(deleteDto.getDeleteType());
+        if (DeleteType.SOFT.equals(deleteType)) {
+            user.setIsActive(Boolean.FALSE);
+            userRepo.save(user);
+        } else {
+            userRepo.deleteById(deleteDto.getId());
+        }
+        return new GenericResponse(HttpStatus.OK, " User delete ");
     }
 }
