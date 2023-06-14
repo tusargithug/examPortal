@@ -5,5 +5,7 @@ public class AppConstant {
 
         public static final String BASE_ENDPOINT = "/api/";
         public static final String APP_USER_END_POINT=BASE_ENDPOINT+"app-user";
+
+        public static final String ATTACHMENT_END_POINT=BASE_ENDPOINT+"attachment";
     }
 }
