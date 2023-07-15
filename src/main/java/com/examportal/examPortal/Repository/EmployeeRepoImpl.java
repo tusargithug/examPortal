@@ -2,6 +2,7 @@ package com.examportal.examPortal.Repository;
 
 import com.examportal.examPortal.Model.Employee;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;

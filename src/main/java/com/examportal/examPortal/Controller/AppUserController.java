@@ -1,14 +1,12 @@
 package com.examportal.examPortal.Controller;
 
-import com.examportal.examPortal.Constant.AppConstant;
-import com.examportal.examPortal.Dto.ChangePasswordDto;
-import com.examportal.examPortal.Dto.DeleteDto;
-import com.examportal.examPortal.Dto.LogInDto;
-import com.examportal.examPortal.Dto.RegisterDto;
-import com.examportal.examPortal.Generic.GenericResponse;
-import com.examportal.examPortal.Service.AppUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+        import com.examportal.examPortal.Constant.AppConstant;
+        import com.examportal.examPortal.Dto.*;
+        import com.examportal.examPortal.Generic.GenericResponse;
+        import com.examportal.examPortal.Service.AppUserService;
+        import com.examportal.examPortal.Service.ServiceImpl.AppUserServiceImpl;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(AppConstant.Endpoints.APP_USER_END_POINT)
@@ -16,7 +14,11 @@ public class AppUserController {
 
     @Autowired
     private AppUserService appUserService;
-
+    @Autowired
+    private AppUserServiceImpl appUserServiceImpl;
+    public AppUserController(AppUserServiceImpl emailService) {
+        this.appUserServiceImpl = emailService;
+    }
     @PostMapping("/registration")
     public GenericResponse registration(@RequestBody RegisterDto registerDto) {
         return appUserService.registration(registerDto);
@@ -40,5 +42,20 @@ public class AppUserController {
     public GenericResponse deleteById(@RequestBody DeleteDto deleteDto) {
 
         return appUserService.deleteById(deleteDto);
+    }
+
+//    @PostMapping("/send-email")
+//    public void emailSent(@RequestBody MailDto mailDto) {
+//         appUserService.sendMailMesssage(mailDto);
+//    }
+
+
+    @PostMapping("/send-email")
+    public void sendEmail(@RequestBody MailDto emailDto) {
+        String to = emailDto.getTo();
+        String subject = emailDto.getSubject();
+        String text = emailDto.getText();
+
+        appUserServiceImpl.sendEmail(to, subject, text);
     }
 }

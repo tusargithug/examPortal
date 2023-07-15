@@ -1,18 +1,16 @@
 package com.examportal.examPortal.Service.ServiceImpl;
 
-import com.examportal.examPortal.Dto.ChangePasswordDto;
-import com.examportal.examPortal.Dto.DeleteDto;
-import com.examportal.examPortal.Dto.LogInDto;
-import com.examportal.examPortal.Dto.RegisterDto;
+import com.examportal.examPortal.Dto.*;
 import com.examportal.examPortal.Enum.DeleteType;
 import com.examportal.examPortal.Enum.Role;
 import com.examportal.examPortal.Generic.GenericResponse;
 import com.examportal.examPortal.Model.AppUser;
-
 import com.examportal.examPortal.Repository.AppUserRepo;
 import com.examportal.examPortal.Service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,6 +19,18 @@ import java.util.Optional;
 public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private AppUserRepo userRepo;
+
+//    @Autowired
+//    JavaMailSender javaMailSender;
+//    @Value("${spring.mail.username}")
+//    String from;
+
+    private final JavaMailSender javaMailSender;
+
+    public AppUserServiceImpl(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
 
     @Override
     public GenericResponse registration(RegisterDto registerDto) {
@@ -124,5 +134,24 @@ public class AppUserServiceImpl implements AppUserService {
             userRepo.deleteById(deleteDto.getId());
         }
         return new GenericResponse(HttpStatus.OK, " User delete ");
+    }
+
+//    @Override
+//    public void sendMailMesssage(MailDto mailDto) {
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setFrom(from);
+//        message.setTo(mailDto.getTo());
+//        message.setSubject(mailDto.getSubject());
+//        message.setText(mailDto.getText());
+//        javaMailSender.send(message);
+//       // return new GenericResponse(HttpStatus.OK , "Email Sent ");
+//    }
+
+    public void sendEmail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        javaMailSender.send(message);
     }
 }
