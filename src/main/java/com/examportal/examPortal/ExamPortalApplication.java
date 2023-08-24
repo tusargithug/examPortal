@@ -8,9 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class ExamPortalApplication {
@@ -42,7 +41,7 @@ public class ExamPortalApplication {
 //			System.out.println("There is a problem to sent the email");
 //		}
 //	}
-    }
+        // }
 
 //    public SimpleMailMessage sendMail(MailDto mailDto) {
 //        SimpleMailMessage message = new SimpleMailMessage();
@@ -54,8 +53,15 @@ public class ExamPortalApplication {
 //        return message;
 //    }
 
+//    @Bean
+//    public JavaMailSender javaMailSender() {
+//        return new JavaMailSenderImpl();
+//    }
+//}
+    }
     @Bean
-    public JavaMailSender javaMailSender() {
-        return new JavaMailSenderImpl();
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+
     }
 }

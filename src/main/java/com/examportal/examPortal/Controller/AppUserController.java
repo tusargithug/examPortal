@@ -50,12 +50,12 @@ public class AppUserController {
 //    }
 
 
-    @PostMapping("/send-email")
-    public void sendEmail(@RequestBody MailDto emailDto) {
-        String to = emailDto.getTo();
-        String subject = emailDto.getSubject();
-        String text = emailDto.getText();
-
-        appUserServiceImpl.sendEmail(to, subject, text);
-    }
+//    @PostMapping("/send-email")
+//    public void sendEmail(@RequestBody MailDto emailDto) {
+//        String to = emailDto.getTo();
+//        String subject = emailDto.getSubject();
+//        String text = emailDto.getText();
+//
+//        appUserServiceImpl.sendEmail(to, subject, text);
+//    }
 }

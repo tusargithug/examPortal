@@ -9,8 +9,7 @@ import com.examportal.examPortal.Repository.AppUserRepo;
 import com.examportal.examPortal.Service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,11 +24,11 @@ public class AppUserServiceImpl implements AppUserService {
 //    @Value("${spring.mail.username}")
 //    String from;
 
-    private final JavaMailSender javaMailSender;
-
-    public AppUserServiceImpl(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
+//    private final JavaMailSender javaMailSender;
+//
+//    public AppUserServiceImpl(JavaMailSender javaMailSender) {
+//        this.javaMailSender = javaMailSender;
+//    }
 
 
     @Override
@@ -147,11 +146,11 @@ public class AppUserServiceImpl implements AppUserService {
 //       // return new GenericResponse(HttpStatus.OK , "Email Sent ");
 //    }
 
-    public void sendEmail(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        javaMailSender.send(message);
-    }
+//    public void sendEmail(String to, String subject, String text) {
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(to);
+//        message.setSubject(subject);
+//        message.setText(text);
+//        javaMailSender.send(message);
+//    }
 }
