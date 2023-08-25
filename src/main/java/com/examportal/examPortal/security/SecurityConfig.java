@@ -1,6 +1,5 @@
 package com.examportal.examPortal.security;
 
-import org.apache.tomcat.util.security.Escape;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -20,15 +19,17 @@ public class SecurityConfig {
     //Authentication
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails admin = User.withUsername("Tusar")
-                .password(passwordEncoder.encode("Tusar@123"))
-                .roles("ADMIN")
-                .build();
-        UserDetails user = User.withUsername("Banty")
-                .password(passwordEncoder.encode("Banty@123"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(admin, user);
+        //It is for static user name and password
+//        UserDetails admin = User.withUsername("Tusar")
+//                .password(passwordEncoder.encode("Tusar@123"))
+//                .roles("ADMIN")
+//                .build();
+//        UserDetails user = User.withUsername("Banty")
+//                .password(passwordEncoder.encode("Banty@123"))
+//                .roles("USER")
+//                .build();
+//        return new InMemoryUserDetailsManager(admin, user);
+        return new UserInfoUserDetailsService();
     }
 
     @Bean
@@ -37,19 +38,16 @@ public class SecurityConfig {
         return http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("")
+                .requestMatchers("employee/save")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests()
                 //In blank space we have to add restrict api
-                .requestMatchers("")
+                .requestMatchers("employee/get")
                 .authenticated()
                 .and()
                 .formLogin()
                 .and()
                 .build();
     }
-
-
-
 }

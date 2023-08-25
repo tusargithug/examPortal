@@ -13,4 +13,6 @@ public interface AppUserRepo extends JpaRepository<AppUser, String> {
     Long countByUserName(String userName);
 
     Optional<AppUser> findByUserNameOrEmail(String userName,String email);
+
+    Optional<AppUser> findByUserName(String username);
 }

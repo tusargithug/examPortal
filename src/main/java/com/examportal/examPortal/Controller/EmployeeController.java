@@ -5,6 +5,7 @@ import com.examportal.examPortal.Repository.EmployeeCustomRepo;
 import com.examportal.examPortal.Repository.EmployeeRepo;
 import com.examportal.examPortal.Service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public Employee saveEmployee(@RequestBody Employee employee){
 
         return employeeService.saveEmployee(employee);
@@ -26,6 +28,7 @@ public class EmployeeController {
 
 
     @GetMapping("/get")
+    @PreAuthorize("hasAnyAuthority('USER')")
     public List<Employee> searchUsersByCriteria(@RequestParam(required = false) String name,
                                                 @RequestParam(required = false) Double salary) {
         return employeeCustomRepo.findEmployeeByCriteria(name,salary);
