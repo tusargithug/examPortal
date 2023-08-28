@@ -3,7 +3,7 @@ package com.examportal.examPortal.Model;
 
 import com.examportal.examPortal.Enum.Role;
 import jakarta.persistence.*;
-import lombok.Data;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -59,9 +59,5 @@ public class ExamPortalApplication {
 //    }
 //}
     }
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
 
-    }
 }

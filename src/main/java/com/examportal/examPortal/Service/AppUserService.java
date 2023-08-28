@@ -15,6 +15,8 @@ public interface AppUserService {
 
     public GenericResponse deleteById(DeleteDto deleteDto);
 
+    public GenericResponse getAll();
 
-   // public void sendMailMesssage(MailDto mailDto);
+
+    // public void sendMailMesssage(MailDto mailDto);
 }
