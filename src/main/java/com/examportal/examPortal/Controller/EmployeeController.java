@@ -28,7 +28,7 @@ public class EmployeeController {
 
 
     @GetMapping("/get")
-    @PreAuthorize("hasAnyAuthority('USER')")
+  //  @PreAuthorize("hasAnyAuthority('USER')")
     public List<Employee> searchUsersByCriteria(@RequestParam(required = false) String name,
                                                 @RequestParam(required = false) Double salary) {
         return employeeCustomRepo.findEmployeeByCriteria(name,salary);

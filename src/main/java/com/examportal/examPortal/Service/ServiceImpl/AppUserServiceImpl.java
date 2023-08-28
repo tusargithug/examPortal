@@ -10,8 +10,11 @@ import com.examportal.examPortal.Service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,11 +57,13 @@ public class AppUserServiceImpl implements AppUserService {
         user.setEmail(registerDto.getEmail());
         // user.setPassword(registerDto.getPassword());
         // user.setConfirmPassword(registerDto.getConfirmPassword());
-        if (registerDto.getPassword().matches(registerDto.getConfirmPassword())) {
-            user.setPassword(registerDto.getPassword());
-        } else {
-            return new GenericResponse(HttpStatus.BAD_REQUEST, "Password mismatch");
-        }
+//        if (registerDto.getPassword().matches(registerDto.getConfirmPassword())) {
+//            user.setPassword(registerDto.getPassword());
+//        } else {
+//            return new GenericResponse(HttpStatus.BAD_REQUEST, "Password mismatch");
+//        }
+        BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
+        user.setPassword(encodePassword.encode(registerDto.getPassword()));
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
@@ -129,10 +134,17 @@ public class AppUserServiceImpl implements AppUserService {
         if (DeleteType.SOFT.equals(deleteType)) {
             user.setIsActive(Boolean.FALSE);
             userRepo.save(user);
+            return new GenericResponse(HttpStatus.OK,"User status change");
         } else {
             userRepo.deleteById(deleteDto.getId());
         }
         return new GenericResponse(HttpStatus.OK, " User delete ");
+    }
+
+    @Override
+    public GenericResponse getAll() {
+        List<AppUser> appUsers = userRepo.findAll();
+        return new GenericResponse(HttpStatus.OK,appUsers);
     }
 
 //    @Override

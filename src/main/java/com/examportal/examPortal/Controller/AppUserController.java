@@ -6,7 +6,10 @@ package com.examportal.examPortal.Controller;
         import com.examportal.examPortal.Service.AppUserService;
         import com.examportal.examPortal.Service.ServiceImpl.AppUserServiceImpl;
         import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.security.access.prepost.PreAuthorize;
         import org.springframework.web.bind.annotation.*;
+
+        import java.security.Principal;
 
 @RestController
 @RequestMapping(AppConstant.Endpoints.APP_USER_END_POINT)
@@ -33,7 +36,7 @@ public class AppUserController {
     public GenericResponse updateUser(@RequestBody RegisterDto registerDto) {
         return appUserService.updateUser(registerDto);
     }
-
+   // @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("/change-password")
     public GenericResponse changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
         return appUserService.changePassword(changePasswordDto);
@@ -42,6 +45,11 @@ public class AppUserController {
     public GenericResponse deleteById(@RequestBody DeleteDto deleteDto) {
 
         return appUserService.deleteById(deleteDto);
+    }
+//    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @GetMapping("get-all")
+    public GenericResponse getById() {
+        return appUserService.getAll();
     }
 
 //    @PostMapping("/send-email")

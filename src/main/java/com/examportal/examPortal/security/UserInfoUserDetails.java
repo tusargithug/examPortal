@@ -10,10 +10,8 @@ import java.util.Collection;
 public class UserInfoUserDetails implements UserDetails {
     private String userName;
     private String password;
+    private Role grantedAuthorities;
 
-    //Multiple role and Role is String data type then use this line
-    //  private List<GrantedAuthority> grantedAuthorities;
-    Role grantedAuthorities;
 
     public UserInfoUserDetails(AppUser appUser) {
         userName = appUser.getUserName();
@@ -24,36 +22,36 @@ public class UserInfoUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return grantedAuthorities;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return userName;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
