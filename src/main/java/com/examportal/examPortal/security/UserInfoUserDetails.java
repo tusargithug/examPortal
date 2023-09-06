@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class UserInfoUserDetails implements UserDetails {
-    private String userName;
-    private String password;
-    private Role grantedAuthorities;
+    private final String userName;
+    private final String password;
+    private final Role grantedAuthorities;
 
 
     public UserInfoUserDetails(AppUser appUser) {
