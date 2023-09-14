@@ -35,7 +35,7 @@ public class AppUserServiceImpl implements AppUserService {
 
 
     @Override
-    public GenericResponse registration(RegisterDto registerDto) {
+    public GenericResponse  registration(RegisterDto registerDto) {
         Long countByUserName = userRepo.countByUserName(registerDto.getUserName());
         if (countByUserName >= 1) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid User Name");
