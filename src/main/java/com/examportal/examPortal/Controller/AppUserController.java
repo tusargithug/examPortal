@@ -6,7 +6,7 @@ package com.examportal.examPortal.Controller;
         import com.examportal.examPortal.Service.AppUserService;
         import com.examportal.examPortal.Service.ServiceImpl.AppUserServiceImpl;
         import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.security.access.prepost.PreAuthorize;
+  //      import org.springframework.security.access.prepost.PreAuthorize;
         import org.springframework.web.bind.annotation.*;
 
         import java.security.Principal;

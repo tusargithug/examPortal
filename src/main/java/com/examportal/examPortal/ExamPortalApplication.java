@@ -4,9 +4,13 @@ package com.examportal.examPortal;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+@SpringBootApplication
 public class ExamPortalApplication {
 
 //    @Autowired
@@ -54,5 +58,8 @@ public class ExamPortalApplication {
 //    }
 //}
     }
-
-}
+    @Bean
+    public JavaMailSender javaMailSender() {
+        return new JavaMailSenderImpl();
+    }
+    }

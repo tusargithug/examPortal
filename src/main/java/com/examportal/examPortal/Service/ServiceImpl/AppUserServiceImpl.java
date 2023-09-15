@@ -7,10 +7,12 @@ import com.examportal.examPortal.Generic.GenericResponse;
 import com.examportal.examPortal.Model.AppUser;
 import com.examportal.examPortal.Repository.AppUserRepo;
 import com.examportal.examPortal.Service.AppUserService;
+import com.examportal.examPortal.emailService.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -21,6 +23,9 @@ import java.util.Optional;
 public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private AppUserRepo userRepo;
+
+    @Autowired
+    private MailService mailService;
 
 //    @Autowired
 //    JavaMailSender javaMailSender;
@@ -62,25 +67,29 @@ public class AppUserServiceImpl implements AppUserService {
 //        } else {
 //            return new GenericResponse(HttpStatus.BAD_REQUEST, "Password mismatch");
 //        }
-        BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
-        user.setPassword(encodePassword.encode(registerDto.getPassword()));
+  //      BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
+   //      user.setPassword(encodePassword.encode(registerDto.getPassword()));
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
+        mailService.sendMail(registerDto.getEmail(),"AVVVVVVVV","KFPrppf");
         return new GenericResponse(HttpStatus.OK, "Registration done");
     }
 
     @Override
-    public GenericResponse logIn(LogInDto logInDto) {
-        Optional<AppUser> appUserOptional = userRepo.findByUserNameOrEmail(logInDto.getUserName(), logInDto.getEmail());
+    public GenericResponse logIn(LogInDto logInDto) throws MailException {
+        Optional<AppUser> appUserOptional = userRepo.findByEmail(logInDto.getEmail());
 
         if (appUserOptional.isEmpty()) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid username or password ");
         }
         AppUser user = appUserOptional.get();
         if (user.getPassword().equals(logInDto.getPassword())) {
+            mailService.sendMail(logInDto.getEmail(),"Login data","Sucessfully log in");
             return new GenericResponse(HttpStatus.OK, "Log in successfully");
+
         }
+
         return null;
     }
 
@@ -164,5 +173,8 @@ public class AppUserServiceImpl implements AppUserService {
 //        message.setSubject(subject);
 //        message.setText(text);
 //        javaMailSender.send(message);
+//    }
+//    public void triggerMail(){
+//        mailService.sendMail("tusar.sahoo@thrymr.net","Mail sent testing","Otp is 12345");
 //    }
 }
