@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,9 @@ public class AppUserServiceImpl implements AppUserService {
     private MailService mailService;
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private AuthenticationManager authManager;
 
     private static final Logger logger = LoggerFactory.getLogger(AppUserServiceImpl.class);
 
@@ -68,23 +73,28 @@ public class AppUserServiceImpl implements AppUserService {
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
+
         return new GenericResponse(HttpStatus.OK, "Registration done");
     }
 
     @Override
     public GenericResponse logIn(LogInDto logInDto) throws MailException {
-        Optional<AppUser> appUserOptional = userRepo.findByEmail(logInDto.getEmail());
+//        Optional<AppUser> appUserOptional = userRepo.findByEmail(logInDto.getEmail());
+//
+//        if (appUserOptional.isEmpty()) {
+//            return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid username or password ");
+//        }
+//        AppUser user = appUserOptional.get();
+//        BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
+//        if(encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())){
+//            return new GenericResponse(HttpStatus.OK, "Log in successfully");
+//        }
+        UsernamePasswordAuthenticationToken authInputToken =
+                new UsernamePasswordAuthenticationToken(logInDto.getEmail(), logInDto.getPassword());
+        authManager.authenticate(authInputToken);
+        String token = jwtService.generateJwtToken(authInputToken);
+        return new GenericResponse(HttpStatus.OK, "Log in successfully");
 
-        if (appUserOptional.isEmpty()) {
-            return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid username or password ");
-        }
-        AppUser user = appUserOptional.get();
-        BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
-        if(encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())){
-            return new GenericResponse(HttpStatus.OK, "Log in successfully");
-        }
-
-        return null;
     }
 
     @Override
