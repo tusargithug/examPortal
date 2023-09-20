@@ -8,11 +8,16 @@ import com.examportal.examPortal.Model.AppUser;
 import com.examportal.examPortal.Repository.AppUserRepo;
 import com.examportal.examPortal.Service.AppUserService;
 import com.examportal.examPortal.emailService.MailService;
+
+import com.examportal.examPortal.security.JwtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.mail.MailException;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -26,18 +31,10 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Autowired
     private MailService mailService;
+    @Autowired
+    private JwtService jwtService;
 
-//    @Autowired
-//    JavaMailSender javaMailSender;
-//    @Value("${spring.mail.username}")
-//    String from;
-
-//    private final JavaMailSender javaMailSender;
-//
-//    public AppUserServiceImpl(JavaMailSender javaMailSender) {
-//        this.javaMailSender = javaMailSender;
-//    }
-
+    private static final Logger logger = LoggerFactory.getLogger(AppUserServiceImpl.class);
 
     @Override
     public GenericResponse  registration(RegisterDto registerDto) {
@@ -60,19 +57,17 @@ public class AppUserServiceImpl implements AppUserService {
         user.setRollNo(registerDto.getRollNo());
         user.setMobileNo(registerDto.getMobileNo());
         user.setEmail(registerDto.getEmail());
-        // user.setPassword(registerDto.getPassword());
-        // user.setConfirmPassword(registerDto.getConfirmPassword());
-//        if (registerDto.getPassword().matches(registerDto.getConfirmPassword())) {
-//            user.setPassword(registerDto.getPassword());
-//        } else {
-//            return new GenericResponse(HttpStatus.BAD_REQUEST, "Password mismatch");
-//        }
-  //      BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
-   //      user.setPassword(encodePassword.encode(registerDto.getPassword()));
+         user.setPassword(registerDto.getPassword());
+        if (registerDto.getPassword().matches(registerDto.getConfirmPassword())) {
+            user.setPassword(registerDto.getPassword());
+        } else {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Password mismatch");
+        }
+        BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
+         user.setPassword(encodePassword.encode(registerDto.getPassword()));
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
-        mailService.sendMail(registerDto.getEmail(),"AVVVVVVVV","KFPrppf");
         return new GenericResponse(HttpStatus.OK, "Registration done");
     }
 
@@ -84,10 +79,9 @@ public class AppUserServiceImpl implements AppUserService {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid username or password ");
         }
         AppUser user = appUserOptional.get();
-        if (user.getPassword().equals(logInDto.getPassword())) {
-            mailService.sendMail(logInDto.getEmail(),"Login data","Sucessfully log in");
+        BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
+        if(encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())){
             return new GenericResponse(HttpStatus.OK, "Log in successfully");
-
         }
 
         return null;
@@ -155,26 +149,4 @@ public class AppUserServiceImpl implements AppUserService {
         List<AppUser> appUsers = userRepo.findAll();
         return new GenericResponse(HttpStatus.OK,appUsers);
     }
-
-//    @Override
-//    public void sendMailMesssage(MailDto mailDto) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom(from);
-//        message.setTo(mailDto.getTo());
-//        message.setSubject(mailDto.getSubject());
-//        message.setText(mailDto.getText());
-//        javaMailSender.send(message);
-//       // return new GenericResponse(HttpStatus.OK , "Email Sent ");
-//    }
-
-//    public void sendEmail(String to, String subject, String text) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(to);
-//        message.setSubject(subject);
-//        message.setText(text);
-//        javaMailSender.send(message);
-//    }
-//    public void triggerMail(){
-//        mailService.sendMail("tusar.sahoo@thrymr.net","Mail sent testing","Otp is 12345");
-//    }
 }

@@ -3,10 +3,12 @@ package com.examportal.examPortal.Controller;
         import com.examportal.examPortal.Constant.AppConstant;
         import com.examportal.examPortal.Dto.*;
         import com.examportal.examPortal.Generic.GenericResponse;
+        import com.examportal.examPortal.Model.AuthenticationResponse;
         import com.examportal.examPortal.Service.AppUserService;
         import com.examportal.examPortal.Service.ServiceImpl.AppUserServiceImpl;
         import org.springframework.beans.factory.annotation.Autowired;
   //      import org.springframework.security.access.prepost.PreAuthorize;
+        import org.springframework.http.ResponseEntity;
         import org.springframework.web.bind.annotation.*;
 
         import java.security.Principal;
