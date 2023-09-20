@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,17 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return clamsResolver.apply(claims);
     }
+    public String generateJwtToken(Authentication authentication) {
 
+        UserInfoUserDetails userPrincipal = (UserInfoUserDetails) authentication.getPrincipal();
+
+        return Jwts.builder()
+                .setSubject((userPrincipal.getUsername()))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + 1000 * 60 * 24))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
@@ -48,7 +59,6 @@ public boolean isTokenValid(String token ,UserDetails userDetails){
 
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
-        
     }
 
     private Date extractExpiration(String token) {
@@ -63,7 +73,6 @@ public boolean isTokenValid(String token ,UserDetails userDetails){
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
-
     }
 
 }
