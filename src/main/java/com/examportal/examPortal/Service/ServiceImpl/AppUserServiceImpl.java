@@ -1,29 +1,28 @@
 package com.examportal.examPortal.Service.ServiceImpl;
 
-import com.examportal.examPortal.Dto.*;
+import com.examportal.examPortal.Dto.ChangePasswordDto;
+import com.examportal.examPortal.Dto.DeleteDto;
+import com.examportal.examPortal.Dto.LogInDto;
+import com.examportal.examPortal.Dto.RegisterDto;
 import com.examportal.examPortal.Enum.DeleteType;
 import com.examportal.examPortal.Enum.Role;
 import com.examportal.examPortal.Generic.GenericResponse;
 import com.examportal.examPortal.Model.AppUser;
 import com.examportal.examPortal.Repository.AppUserRepo;
 import com.examportal.examPortal.Service.AppUserService;
-import com.examportal.examPortal.emailService.MailService;
 
 import com.examportal.examPortal.security.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.MailException;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,9 +30,6 @@ import java.util.Optional;
 public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private AppUserRepo userRepo;
-
-    @Autowired
-    private MailService mailService;
     @Autowired
     private JwtService jwtService;
 
@@ -43,7 +39,7 @@ public class AppUserServiceImpl implements AppUserService {
     private static final Logger logger = LoggerFactory.getLogger(AppUserServiceImpl.class);
 
     @Override
-    public GenericResponse  registration(RegisterDto registerDto) {
+    public GenericResponse registration(RegisterDto registerDto) {
         Long countByUserName = userRepo.countByUserName(registerDto.getUserName());
         if (countByUserName >= 1) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid User Name");
@@ -63,14 +59,14 @@ public class AppUserServiceImpl implements AppUserService {
         user.setRollNo(registerDto.getRollNo());
         user.setMobileNo(registerDto.getMobileNo());
         user.setEmail(registerDto.getEmail());
-         user.setPassword(registerDto.getPassword());
+        user.setPassword(registerDto.getPassword());
         if (registerDto.getPassword().matches(registerDto.getConfirmPassword())) {
             user.setPassword(registerDto.getPassword());
         } else {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Password mismatch");
         }
         BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
-         user.setPassword(encodePassword.encode(registerDto.getPassword()));
+        user.setPassword(encodePassword.encode(registerDto.getPassword()));
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
@@ -79,7 +75,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public GenericResponse logIn(LogInDto logInDto) throws MailException {
+    public GenericResponse logIn(LogInDto logInDto)  {
         Optional<AppUser> appUserOptional = userRepo.findByEmail(logInDto.getEmail());
 
         if (appUserOptional.isEmpty()) {
@@ -87,17 +83,16 @@ public class AppUserServiceImpl implements AppUserService {
         }
         AppUser user = appUserOptional.get();
         BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
-        if(encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())){
+        if (encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())) {
             return new GenericResponse(HttpStatus.OK, "Log in successfully");
         }
 
-       Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(logInDto.getEmail(), logInDto.getPassword()));
-       if(authentication.isAuthenticated()) {
-           return new GenericResponse(HttpStatus.OK, "Log in successfully",jwtService.generateJwtToken(authentication));
-       }
-       else{
-           return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
-       }
+        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(logInDto.getEmail(), logInDto.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return new GenericResponse(HttpStatus.OK, "Log in successfully", jwtService.generateJwtToken(authentication));
+        } else {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
+        }
 
     }
 
@@ -151,7 +146,7 @@ public class AppUserServiceImpl implements AppUserService {
         if (DeleteType.SOFT.equals(deleteType)) {
             user.setIsActive(Boolean.FALSE);
             userRepo.save(user);
-            return new GenericResponse(HttpStatus.OK,"User status change");
+            return new GenericResponse(HttpStatus.OK, "User status change");
         } else {
             userRepo.deleteById(deleteDto.getId());
         }
@@ -161,6 +156,6 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public GenericResponse getAll() {
         List<AppUser> appUsers = userRepo.findAll();
-        return new GenericResponse(HttpStatus.OK,appUsers);
+        return new GenericResponse(HttpStatus.OK, appUsers);
     }
 }

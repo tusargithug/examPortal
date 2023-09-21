@@ -3,16 +3,13 @@ package com.examportal.examPortal.Controller;
         import com.examportal.examPortal.Constant.AppConstant;
         import com.examportal.examPortal.Dto.*;
         import com.examportal.examPortal.Generic.GenericResponse;
-        import com.examportal.examPortal.Model.AuthenticationResponse;
         import com.examportal.examPortal.Service.AppUserService;
         import com.examportal.examPortal.Service.ServiceImpl.AppUserServiceImpl;
         import com.examportal.examPortal.security.JwtService;
         import org.springframework.beans.factory.annotation.Autowired;
   //      import org.springframework.security.access.prepost.PreAuthorize;
-        import org.springframework.http.ResponseEntity;
+        import org.springframework.security.access.prepost.PreAuthorize;
         import org.springframework.web.bind.annotation.*;
-
-        import java.security.Principal;
 
 @RestController
 @RequestMapping(AppConstant.Endpoints.APP_USER_END_POINT)
@@ -41,6 +38,7 @@ public class AppUserController {
 //        return jtwService.
 //                generateToken(logInDto.getEmail());
 //    }
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping("/update")
     public GenericResponse updateUser(@RequestBody RegisterDto registerDto) {
         return appUserService.updateUser(registerDto);
@@ -60,19 +58,4 @@ public class AppUserController {
     public GenericResponse getById() {
         return appUserService.getAll();
     }
-
-//    @PostMapping("/send-email")
-//    public void emailSent(@RequestBody MailDto mailDto) {
-//         appUserService.sendMailMesssage(mailDto);
-//    }
-
-
-//    @PostMapping("/send-email")
-//    public void sendEmail(@RequestBody MailDto emailDto) {
-//        String to = emailDto.getTo();
-//        String subject = emailDto.getSubject();
-//        String text = emailDto.getText();
-//
-//        appUserServiceImpl.sendEmail(to, subject, text);
-//    }
 }

@@ -16,11 +16,12 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepo employeeRepo;
 
-    public Employee saveEmployee(Employee employee){
+    public Employee saveEmployee(Employee employee) {
 
         return employeeRepo.save(employee);
     }
+
     public List<Employee> searchEmployeeByNameAndSalary(String name, Double salary) {
-        return employeeCustomRepo.findEmployeeByCriteria(name,salary);
+        return employeeCustomRepo.findEmployeeByCriteria(name, salary);
     }
 }
