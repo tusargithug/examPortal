@@ -43,7 +43,7 @@ public class SecurityConfig {
         return http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("api/app-user/login/","employee/get")
+                .requestMatchers("api/app-user/login","employee/get")
                 .permitAll()
                 .and()
                 .authorizeHttpRequests()

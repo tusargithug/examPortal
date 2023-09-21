@@ -27,6 +27,11 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return clamsResolver.apply(claims);
     }
+    public String generateToken(String email){
+        Map<String,Object> claims=new HashMap<>();
+        return createToken(claims,email);
+    }
+
     public String generateJwtToken(Authentication authentication) {
 
         UserInfoUserDetails userPrincipal = (UserInfoUserDetails) authentication.getPrincipal();
@@ -62,10 +67,7 @@ public class JwtService {
         return false;
     }
 
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
@@ -81,7 +83,14 @@ public class JwtService {
                 .compact();
 
     }
-
+    private String createToken(Map<String, Object> claims, String userName) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userName)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
+    }
 
 
 
@@ -103,6 +112,9 @@ public boolean isTokenValid(String token ,UserDetails userDetails){
         return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
     }
 
-
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 
 }
