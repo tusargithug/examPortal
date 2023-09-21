@@ -38,7 +38,7 @@ public class AppUserController {
 //        return jtwService.
 //                generateToken(logInDto.getEmail());
 //    }
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('STUDENT')")
     @PostMapping("/update")
     public GenericResponse updateUser(@RequestBody RegisterDto registerDto) {
         return appUserService.updateUser(registerDto);

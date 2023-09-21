@@ -11,6 +11,7 @@ import com.examportal.examPortal.Model.AppUser;
 import com.examportal.examPortal.Repository.AppUserRepo;
 import com.examportal.examPortal.Service.AppUserService;
 
+import com.examportal.examPortal.Util.ServiceUtility;
 import com.examportal.examPortal.security.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ import java.util.Optional;
 public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private AppUserRepo userRepo;
+    @Autowired
+    private ServiceUtility serviceUtility;
+    //Below are for security
     @Autowired
     private JwtService jwtService;
 
@@ -75,7 +79,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public GenericResponse logIn(LogInDto logInDto)  {
+    public GenericResponse logIn(LogInDto logInDto) {
         Optional<AppUser> appUserOptional = userRepo.findByEmail(logInDto.getEmail());
 
         if (appUserOptional.isEmpty()) {
@@ -89,7 +93,8 @@ public class AppUserServiceImpl implements AppUserService {
 
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(logInDto.getEmail(), logInDto.getPassword()));
         if (authentication.isAuthenticated()) {
-            return new GenericResponse(HttpStatus.OK, "Log in successfully", jwtService.generateJwtToken(authentication));
+            String token = jwtService.generateJwtToken(authentication);
+            return new GenericResponse(HttpStatus.OK, "Log in successfully", token);
         } else {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
         }
