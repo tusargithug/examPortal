@@ -36,11 +36,11 @@ public class AppUserController {
         return appUserService.logIn(logInDto);
     }
 
-    @PostMapping("/token")
-    public String tokenGenerate(@RequestBody LogInDto logInDto) {
-        return jtwService.
-                generateToken(logInDto.getEmail());
-    }
+//    @PostMapping("/token")
+//    public String tokenGenerate(@RequestBody LogInDto logInDto) {
+//        return jtwService.
+//                generateToken(logInDto.getEmail());
+//    }
     @PostMapping("/update")
     public GenericResponse updateUser(@RequestBody RegisterDto registerDto) {
         return appUserService.updateUser(registerDto);
