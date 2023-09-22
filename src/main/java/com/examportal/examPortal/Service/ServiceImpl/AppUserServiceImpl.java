@@ -1,14 +1,15 @@
 package com.examportal.examPortal.Service.ServiceImpl;
 
-import com.examportal.examPortal.Dto.ChangePasswordDto;
-import com.examportal.examPortal.Dto.DeleteDto;
-import com.examportal.examPortal.Dto.LogInDto;
-import com.examportal.examPortal.Dto.RegisterDto;
+import com.examportal.examPortal.Dto.*;
 import com.examportal.examPortal.Enum.DeleteType;
+import com.examportal.examPortal.Enum.OTPType;
+import com.examportal.examPortal.Enum.OtpStatus;
 import com.examportal.examPortal.Enum.Role;
 import com.examportal.examPortal.Generic.GenericResponse;
 import com.examportal.examPortal.Model.AppUser;
+import com.examportal.examPortal.Model.Otp;
 import com.examportal.examPortal.Repository.AppUserRepo;
+import com.examportal.examPortal.Repository.OtpRepo;
 import com.examportal.examPortal.Service.AppUserService;
 
 import com.examportal.examPortal.Util.ServiceUtility;
@@ -24,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +33,9 @@ import java.util.Optional;
 public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private AppUserRepo userRepo;
+
     @Autowired
-    private ServiceUtility serviceUtility;
+    private OtpRepo otpRepo;
     //Below are for security
     @Autowired
     private JwtService jwtService;
@@ -79,18 +82,61 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
+    public GenericResponse generateOtp(GenerateOtpDto generateOtpDto) {
+        if (generateOtpDto.getEmail().isEmpty()) {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Email id is missing");
+        }
+        if (generateOtpDto.getOtpType().toString().isEmpty()) {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Email id is missing");
+        }
+        if (generateOtpDto.getOtpType().equals(OTPType.SIGN_IN)) {
+            Optional<AppUser> appUser = userRepo.findByEmail(generateOtpDto.getEmail());
+            if (appUser.isPresent()) {
+                String logInOtp = ServiceUtility.yourOtp();
+                Otp otp = new Otp();
+                otp.setOTP(logInOtp);
+                otp.setOtpStatus(OtpStatus.PENDING);
+                otp.setExpiryDateTime(LocalDateTime.now().plusMinutes(5));
+                otp.setUser(appUser.get());
+                otpRepo.save(otp);
+                return new GenericResponse(HttpStatus.OK, logInOtp);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public GenericResponse otpVerification(OtpVerificationDto otpVerificationDto) {
+        Optional<Otp> otpOptional = otpRepo.findByOTPAndExpiryDateTimeAndOTPType(otpVerificationDto.getOtp(), LocalDateTime.now(), OTPType.SIGN_IN);
+        if (otpOptional.isEmpty()) {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid otp to login");
+        }
+        if (otpOptional.isPresent()) {
+            Otp otp = otpOptional.get();
+            if (otp.getExpiryDateTime().isAfter(LocalDateTime.now())) {
+                return new GenericResponse(HttpStatus.BAD_REQUEST, "Otp expired");
+            } else {
+                otp.setOtpStatus(OtpStatus.SUCCESS);
+                otpRepo.save(otp);
+                return new GenericResponse(HttpStatus.OK, "Otp verified ");
+            }
+
+       }
+        return null;
+    }
+
+    @Override
     public GenericResponse logIn(LogInDto logInDto) {
         Optional<AppUser> appUserOptional = userRepo.findByEmail(logInDto.getEmail());
 
         if (appUserOptional.isEmpty()) {
-            return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid username or password ");
+            return new GenericResponse(HttpStatus.UNAUTHORIZED, "Invalid username ");
         }
         AppUser user = appUserOptional.get();
         BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
         if (encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())) {
             return new GenericResponse(HttpStatus.OK, "Log in successfully");
         }
-
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(logInDto.getEmail(), logInDto.getPassword()));
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateJwtToken(authentication);
@@ -98,8 +144,9 @@ public class AppUserServiceImpl implements AppUserService {
         } else {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
         }
-
     }
+
+
 
     @Override
     public GenericResponse updateUser(RegisterDto registerDto) {
@@ -163,4 +210,6 @@ public class AppUserServiceImpl implements AppUserService {
         List<AppUser> appUsers = userRepo.findAll();
         return new GenericResponse(HttpStatus.OK, appUsers);
     }
+
+
 }

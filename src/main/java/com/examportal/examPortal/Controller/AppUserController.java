@@ -27,6 +27,15 @@ public class AppUserController {
     public GenericResponse registration(@RequestBody RegisterDto registerDto) {
         return appUserService.registration(registerDto);
     }
+    @PostMapping("/generate-otp")
+    public GenericResponse generateOtp(@RequestBody GenerateOtpDto generateOtpDto) {
+        return appUserService.generateOtp(generateOtpDto);
+    }
+    @PostMapping("/otp-verification")
+    public GenericResponse otpVerification(@RequestBody OtpVerificationDto otpVerificationDto) {
+        return appUserService.otpVerification(otpVerificationDto);
+    }
+
 
     @PostMapping("/login")
     public GenericResponse logIn(@RequestBody LogInDto logInDto) {
@@ -50,7 +59,6 @@ public class AppUserController {
     }
 
     public GenericResponse deleteById(@RequestBody DeleteDto deleteDto) {
-
         return appUserService.deleteById(deleteDto);
     }
 //    @PreAuthorize("hasAnyAuthority('ADMIN')")

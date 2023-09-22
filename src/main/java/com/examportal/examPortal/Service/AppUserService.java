@@ -1,9 +1,6 @@
 package com.examportal.examPortal.Service;
 
-import com.examportal.examPortal.Dto.ChangePasswordDto;
-import com.examportal.examPortal.Dto.DeleteDto;
-import com.examportal.examPortal.Dto.LogInDto;
-import com.examportal.examPortal.Dto.RegisterDto;
+import com.examportal.examPortal.Dto.*;
 import com.examportal.examPortal.Generic.GenericResponse;
 
 public interface AppUserService {
@@ -18,4 +15,8 @@ public interface AppUserService {
     public GenericResponse deleteById(DeleteDto deleteDto);
 
     public GenericResponse getAll();
+
+    GenericResponse generateOtp(GenerateOtpDto generateOtpDto);
+
+    GenericResponse otpVerification(OtpVerificationDto otpVerificationDto);
 }
