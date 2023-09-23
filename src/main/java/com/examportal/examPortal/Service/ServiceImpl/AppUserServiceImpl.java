@@ -119,14 +119,7 @@ public class AppUserServiceImpl implements AppUserService {
             } else {
                 otp.setOtpStatus(OtpStatus.SUCCESS);
                 otpRepo.save(otp);
-//                 Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
-//                  if (authentication.isAuthenticated()) {
-//                      String token = jwtService.generateJwtToken(authentication);
-//                      return new GenericResponse(HttpStatus.OK, "Otp verified ", token);
-//                      } else {
-//                       return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
-//                     }
-
+                //TODO if requirement is  login with any otp verification
                 String token = jwtService.generateJwtTokenForEmail(otpVerificationDto.getEmail());
                 return new GenericResponse(HttpStatus.OK, "Otp verified ", token);
             }
@@ -147,6 +140,7 @@ public class AppUserServiceImpl implements AppUserService {
         if (encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())) {
             return new GenericResponse(HttpStatus.OK, "Log in successfully");
         }
+        //TODO if requirement is directly to login with out any otp verification
         // Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
         //  if (authentication.isAuthenticated()) {
         //      String token = jwtService.generateJwtToken(authentication);
