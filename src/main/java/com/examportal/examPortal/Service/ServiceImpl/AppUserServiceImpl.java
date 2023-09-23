@@ -95,6 +95,7 @@ public class AppUserServiceImpl implements AppUserService {
                 String logInOtp = ServiceUtility.yourOtp();
                 Otp otp = new Otp();
                 otp.setOTP(logInOtp);
+                otp.setOTPType(generateOtpDto.getOtpType());
                 otp.setOtpStatus(OtpStatus.PENDING);
                 otp.setExpiryDateTime(LocalDateTime.now().plusMinutes(5));
                 otp.setUser(appUser.get());
@@ -107,18 +108,27 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public GenericResponse otpVerification(OtpVerificationDto otpVerificationDto) {
-        Optional<Otp> otpOptional = otpRepo.findByOTPAndExpiryDateTimeAndOTPType(otpVerificationDto.getOtp(), LocalDateTime.now(), OTPType.SIGN_IN);
+        Optional<Otp> otpOptional = otpRepo.findByOTPAndOTPType(otpVerificationDto.getOtp(),OTPType.SIGN_IN);
         if (otpOptional.isEmpty()) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid otp to login");
         }
         if (otpOptional.isPresent()) {
             Otp otp = otpOptional.get();
-            if (otp.getExpiryDateTime().isAfter(LocalDateTime.now())) {
+            if (otp.getExpiryDateTime().equals(LocalDateTime.now())) {
                 return new GenericResponse(HttpStatus.BAD_REQUEST, "Otp expired");
             } else {
                 otp.setOtpStatus(OtpStatus.SUCCESS);
                 otpRepo.save(otp);
-                return new GenericResponse(HttpStatus.OK, "Otp verified ");
+//                 Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
+//                  if (authentication.isAuthenticated()) {
+//                      String token = jwtService.generateJwtToken(authentication);
+//                      return new GenericResponse(HttpStatus.OK, "Otp verified ", token);
+//                      } else {
+//                       return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
+//                     }
+
+                String token = jwtService.generateJwtTokenForEmail(otpVerificationDto.getEmail());
+                return new GenericResponse(HttpStatus.OK, "Otp verified ", token);
             }
 
        }
@@ -137,13 +147,14 @@ public class AppUserServiceImpl implements AppUserService {
         if (encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())) {
             return new GenericResponse(HttpStatus.OK, "Log in successfully");
         }
-        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(logInDto.getEmail(), logInDto.getPassword()));
-        if (authentication.isAuthenticated()) {
-            String token = jwtService.generateJwtToken(authentication);
-            return new GenericResponse(HttpStatus.OK, "Log in successfully", token);
-        } else {
-            return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
-        }
+        // Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
+        //  if (authentication.isAuthenticated()) {
+        //      String token = jwtService.generateJwtToken(authentication);
+        //      return new GenericResponse(HttpStatus.OK, "Otp verified ", token);
+        //      } else {
+        //       return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
+        //     }
+            return new GenericResponse(HttpStatus.OK, "Otp generated");
     }
 
 

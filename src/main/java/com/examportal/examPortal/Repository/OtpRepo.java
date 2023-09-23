@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface OtpRepo extends JpaRepository<Otp,String> {
     Optional<Otp> findByOTP(String otp);
-    Optional<Otp> findByOTPAndExpiryDateTimeAndOTPType(String otp, LocalDateTime now, OTPType signIn);
+    Optional<Otp> findByOTPAndOTPType(String otp,OTPType signIn);
 }

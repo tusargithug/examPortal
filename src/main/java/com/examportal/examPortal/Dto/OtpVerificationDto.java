@@ -11,4 +11,6 @@ import lombok.Setter;
 public class OtpVerificationDto {
     private String otp;
     private OTPType otpType ;
+    private String email;
+    private String password;
 }
