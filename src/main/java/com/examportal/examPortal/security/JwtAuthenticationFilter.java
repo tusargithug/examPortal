@@ -23,7 +23,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
-    JwtService jwtUtils;
+    JwtService jwtService;
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
@@ -34,10 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             String email = null ;
-           if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                 email = jwtUtils.getEmailFromJwtToken(jwt);
+           if (jwt != null && jwtService.validateJwtToken(jwt)) {
+                 email = jwtService.getEmailFromJwtToken(jwt);
                  if(email == null){
-                     email = jwtUtils.extractEmailFromToken(jwt);
+                     email = jwtService.extractEmailFromToken(jwt);
                      logger.info("Email :::::::::::"+email);
                  }
 //                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
              UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                if (jwtUtils.validateJwtToken(jwt)) {
+                if (jwtService.validateJwtToken(jwt)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
