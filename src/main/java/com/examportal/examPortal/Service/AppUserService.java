@@ -7,6 +7,9 @@ public interface AppUserService {
     public GenericResponse registration(RegisterDto registerDto);
 
     public GenericResponse logIn(LogInDto logInDto);
+    GenericResponse generateOtp(GenerateOtpDto generateOtpDto);
+
+    GenericResponse otpVerification(OtpVerificationDto otpVerificationDto);
 
     public GenericResponse updateUser(RegisterDto registerDto);
 
@@ -16,7 +19,5 @@ public interface AppUserService {
 
     public GenericResponse getAll();
 
-    GenericResponse generateOtp(GenerateOtpDto generateOtpDto);
-
-    GenericResponse otpVerification(OtpVerificationDto otpVerificationDto);
+    GenericResponse getById(String id);
 }

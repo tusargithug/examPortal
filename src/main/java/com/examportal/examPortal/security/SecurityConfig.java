@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 //In blank space we have to add restrict api
-                .requestMatchers("api/app-user/update")
+                .requestMatchers("api/app-user/**")
                 .authenticated()
                 .and()
                 .sessionManagement()

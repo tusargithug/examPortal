@@ -61,9 +61,14 @@ public class AppUserController {
     public GenericResponse deleteById(@RequestBody DeleteDto deleteDto) {
         return appUserService.deleteById(deleteDto);
     }
-//    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @GetMapping("get-all")
-    public GenericResponse getById() {
+    public GenericResponse getAll() {
         return appUserService.getAll();
+    }
+    @PreAuthorize("hasAnyAuthority('STUDENT')")
+    @GetMapping("get-by-id")
+    public GenericResponse getById(String id) {
+        return appUserService.getById(id);
     }
 }

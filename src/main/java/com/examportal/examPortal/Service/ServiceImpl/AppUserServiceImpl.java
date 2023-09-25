@@ -144,7 +144,7 @@ public class AppUserServiceImpl implements AppUserService {
 
         }
         //TODO if requirement is directly to login with out any otp verification
-        // Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
+      //   Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
         //  if (authentication.isAuthenticated()) {
         //      String token = jwtService.generateJwtToken(authentication);
         //      return new GenericResponse(HttpStatus.OK, "Otp verified ", token);
@@ -216,6 +216,21 @@ public class AppUserServiceImpl implements AppUserService {
     public GenericResponse getAll() {
         List<AppUser> appUsers = userRepo.findAll();
         return new GenericResponse(HttpStatus.OK, appUsers);
+    }
+
+    @Override
+    public GenericResponse getById(String id) {
+        Optional<AppUser> appUserOptional = userRepo.findById(id);
+        if(appUserOptional.isEmpty()){
+            return new GenericResponse(HttpStatus.BAD_REQUEST,"User not found ");
+        }
+        AppUser user = appUserOptional.get();
+        RegisterDto registerDto = new RegisterDto();
+        registerDto.setId(user.getId());
+        registerDto.setEmail(user.getEmail());
+
+
+        return new GenericResponse(HttpStatus.OK, registerDto);
     }
 
 
