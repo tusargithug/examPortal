@@ -36,5 +36,6 @@ public class Otp extends BaseEntity {
     @JoinColumn(name = "user_id")
     private AppUser user;
 
-
+    @Column(name = "otp_char")
+    private String OTPChar;
 }

@@ -11,17 +11,13 @@ import com.examportal.examPortal.Model.Otp;
 import com.examportal.examPortal.Repository.AppUserRepo;
 import com.examportal.examPortal.Repository.OtpRepo;
 import com.examportal.examPortal.Service.AppUserService;
-
 import com.examportal.examPortal.Util.ServiceUtility;
 import com.examportal.examPortal.security.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +77,7 @@ public class AppUserServiceImpl implements AppUserService {
         return new GenericResponse(HttpStatus.OK, "Registration done");
     }
 
+    //TODO when otp type is forgot password
     @Override
     public GenericResponse generateOtp(GenerateOtpDto generateOtpDto) {
         if (generateOtpDto.getEmail().isEmpty()) {
@@ -89,12 +86,14 @@ public class AppUserServiceImpl implements AppUserService {
         if (generateOtpDto.getOtpType().toString().isEmpty()) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Otp type is missing");
         }
-        if (generateOtpDto.getOtpType().equals(OTPType.SIGN_IN)) {
+        if (generateOtpDto.getOtpType().equals(OTPType.FORGOT_PASSWORD)) {
             Optional<AppUser> appUser = userRepo.findByEmail(generateOtpDto.getEmail());
             if (appUser.isPresent()) {
                 String logInOtp = ServiceUtility.yourOtp();
+                String otpChar = ServiceUtility.generateAlphaCharacter(4);
                 Otp otp = new Otp();
                 otp.setOTP(logInOtp);
+                otp.setOTPChar(otpChar);
                 otp.setOTPType(generateOtpDto.getOtpType());
                 otp.setOtpStatus(OtpStatus.PENDING);
                 otp.setExpiryDateTime(LocalDateTime.now().plusMinutes(5));
@@ -108,13 +107,13 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public GenericResponse otpVerification(OtpVerificationDto otpVerificationDto) {
-        Optional<Otp> otpOptional = otpRepo.findByOTPAndOTPType(otpVerificationDto.getOtp(),OTPType.SIGN_IN);
+        Optional<Otp> otpOptional = otpRepo.findByOTPAndOTPType(otpVerificationDto.getOtp(), OTPType.SIGN_IN);
         if (otpOptional.isEmpty()) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid otp to login");
         }
         if (otpOptional.isPresent()) {
             Otp otp = otpOptional.get();
-            if (otp.getExpiryDateTime().equals(LocalDateTime.now())||otp.getExpiryDateTime().isBefore(LocalDateTime.now())) {
+            if (otp.getExpiryDateTime().equals(LocalDateTime.now()) || otp.getExpiryDateTime().isBefore(LocalDateTime.now())) {
                 return new GenericResponse(HttpStatus.BAD_REQUEST, "Otp expired");
             } else {
                 otp.setOtpStatus(OtpStatus.SUCCESS);
@@ -124,7 +123,7 @@ public class AppUserServiceImpl implements AppUserService {
                 return new GenericResponse(HttpStatus.OK, "Otp verified ", token);
             }
 
-       }
+        }
         return null;
     }
 
@@ -138,13 +137,24 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser user = appUserOptional.get();
         BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
         if (encodePassword.matches(logInDto.getPassword(), user.getPassword())) {
-            return new GenericResponse(HttpStatus.OK, "Otp generated");
+            String logInOtp = ServiceUtility.yourOtp();
+            String otpChar = ServiceUtility.generateAlphaCharacter(4);
+            Otp otp = new Otp();
+            otp.setOTP(logInOtp);
+            otp.setOTPChar(otpChar);
+            otp.setOTPType(OTPType.SIGN_IN);
+            otp.setOtpStatus(OtpStatus.PENDING);
+            otp.setExpiryDateTime(LocalDateTime.now().plusMinutes(5));
+            otp.setUser(user);
+            otpRepo.save(otp);
+            return new GenericResponse(HttpStatus.OK, "Otp generated", otpChar);
         } else {
             return new GenericResponse(HttpStatus.OK, "Invalid password");
-
         }
+
+
         //TODO if requirement is directly to login with out any otp verification
-      //   Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
+        //   Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
         //  if (authentication.isAuthenticated()) {
         //      String token = jwtService.generateJwtToken(authentication);
         //      return new GenericResponse(HttpStatus.OK, "Otp verified ", token);
@@ -152,7 +162,6 @@ public class AppUserServiceImpl implements AppUserService {
         //       return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
         //     }
     }
-
 
 
     @Override
@@ -221,8 +230,8 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public GenericResponse getById(String id) {
         Optional<AppUser> appUserOptional = userRepo.findById(id);
-        if(appUserOptional.isEmpty()){
-            return new GenericResponse(HttpStatus.BAD_REQUEST,"User not found ");
+        if (appUserOptional.isEmpty()) {
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "User not found ");
         }
         AppUser user = appUserOptional.get();
         RegisterDto registerDto = new RegisterDto();
