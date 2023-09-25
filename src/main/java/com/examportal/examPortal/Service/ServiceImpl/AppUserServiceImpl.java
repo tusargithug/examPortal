@@ -87,7 +87,7 @@ public class AppUserServiceImpl implements AppUserService {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Email id is missing");
         }
         if (generateOtpDto.getOtpType().toString().isEmpty()) {
-            return new GenericResponse(HttpStatus.BAD_REQUEST, "Email id is missing");
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Otp type is missing");
         }
         if (generateOtpDto.getOtpType().equals(OTPType.SIGN_IN)) {
             Optional<AppUser> appUser = userRepo.findByEmail(generateOtpDto.getEmail());
@@ -114,7 +114,7 @@ public class AppUserServiceImpl implements AppUserService {
         }
         if (otpOptional.isPresent()) {
             Otp otp = otpOptional.get();
-            if (otp.getExpiryDateTime().equals(LocalDateTime.now())) {
+            if (otp.getExpiryDateTime().equals(LocalDateTime.now())||otp.getExpiryDateTime().isBefore(LocalDateTime.now())) {
                 return new GenericResponse(HttpStatus.BAD_REQUEST, "Otp expired");
             } else {
                 otp.setOtpStatus(OtpStatus.SUCCESS);
@@ -137,8 +137,11 @@ public class AppUserServiceImpl implements AppUserService {
         }
         AppUser user = appUserOptional.get();
         BCryptPasswordEncoder encodePassword = new BCryptPasswordEncoder();
-        if (encodePassword.encode(logInDto.getPassword()).matches(user.getPassword())) {
-            return new GenericResponse(HttpStatus.OK, "Log in successfully");
+        if (encodePassword.matches(logInDto.getPassword(), user.getPassword())) {
+            return new GenericResponse(HttpStatus.OK, "Otp generated");
+        } else {
+            return new GenericResponse(HttpStatus.OK, "Invalid password");
+
         }
         //TODO if requirement is directly to login with out any otp verification
         // Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(otpVerificationDto.getEmail(), otpVerificationDto.getPassword()));
@@ -148,7 +151,6 @@ public class AppUserServiceImpl implements AppUserService {
         //      } else {
         //       return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid user name or password");
         //     }
-            return new GenericResponse(HttpStatus.OK, "Otp generated");
     }
 
 
