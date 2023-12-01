@@ -39,6 +39,9 @@ public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private AuthenticationManager authManager;
 
+    @Autowired
+    private MailService mailService;
+
     private static final Logger logger = LoggerFactory.getLogger(AppUserServiceImpl.class);
 
     @Override
@@ -73,7 +76,8 @@ public class AppUserServiceImpl implements AppUserService {
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
-
+        String subject = "This is your registration otp";
+    //    mailService.sendMail("Otp generated",);
         return new GenericResponse(HttpStatus.OK, "Registration done");
     }
 
