@@ -3,61 +3,56 @@ package com.examportal.examPortal.security;
 import com.examportal.examPortal.Enum.Role;
 import com.examportal.examPortal.Model.AppUser;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 public class UserInfoUserDetails implements UserDetails {
-    private String userName;
-    private String password;
+    private final String email;
+    private final String password;
+    private Role role;
 
-    //Multiple role and Role is String data type then use this line
-    //  private List<GrantedAuthority> grantedAuthorities;
-    Role grantedAuthorities;
 
     public UserInfoUserDetails(AppUser appUser) {
-        userName = appUser.getUserName();
+        email = appUser.getEmail();
         password = appUser.getPassword();
-        grantedAuthorities = appUser.getRoleType();
-
+        role = appUser.getRoleType();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
-    ////
-    /////////////
-    /////////////////////
-    /////////////////////////
 }

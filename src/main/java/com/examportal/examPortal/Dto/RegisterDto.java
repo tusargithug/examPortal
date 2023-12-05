@@ -29,4 +29,6 @@ public class RegisterDto {
 
     private String roleType;
 
+    private String token;
+
 }
