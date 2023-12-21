@@ -13,7 +13,7 @@ public class ExamPortalApplication {
         SpringApplication.run(ExamPortalApplication.class, args);
         System.out.println("===========================================");
         System.out.println("===========================================");
-        System.out.println("======Exam Portal Start");
+        System.out.println("============Exam Portal Start==============");
         System.out.println("===========================================");
         System.out.println("===========================================");
 

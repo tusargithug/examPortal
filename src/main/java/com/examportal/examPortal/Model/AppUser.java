@@ -42,9 +42,6 @@ public class AppUser extends BaseEntity  {
     @Column(name = "is_active")
     private Boolean isActive=Boolean.TRUE;
 
-    public AppUser(AppUser appUser) {
-    }
-
 
 
 }
