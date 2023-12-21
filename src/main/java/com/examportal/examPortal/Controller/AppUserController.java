@@ -3,7 +3,6 @@ package com.examportal.examPortal.Controller;
 import com.examportal.examPortal.Constant.AppConstant;
 import com.examportal.examPortal.Dto.*;
 import com.examportal.examPortal.Generic.GenericResponse;
-import com.examportal.examPortal.Model.MailStructure;
 import com.examportal.examPortal.Service.AppUserService;
 import com.examportal.examPortal.Service.ServiceImpl.AppUserServiceImpl;
 import com.examportal.examPortal.Service.ServiceImpl.MailService;
@@ -78,15 +77,15 @@ public class AppUserController {
         return appUserService.getAll();
     }
 
-    @PreAuthorize("hasAnyAuthority('STUDENT')")
+  //  @PreAuthorize("hasAnyAuthority('STUDENT')")
     @GetMapping("get-by-id")
-    public GenericResponse getById(String id) {
+    public GenericResponse getById(@RequestParam("id") String id) {
         return appUserService.getById(id);
     }
 
-    @PostMapping("/send")
-    public String mailSent(@RequestParam("mail") String mail, @RequestBody MailStructure mailStructure){
-        mailService.sendMail(mail,mailStructure);
-        return "Successfully sent the mail";
-    }
+//    @PostMapping("/send")
+//    public String mailSent(@RequestParam("mail") String mail, @RequestBody MailStructure mailStructure){
+//        mailService.sendMail(mail,mailStructure);
+//        return "Successfully sent the mail";
+//    }
 }

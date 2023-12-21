@@ -39,10 +39,14 @@ public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private AuthenticationManager authManager;
 
-    @Autowired
-    private MailService mailService;
+    private final MailService mailService;
 
     private static final Logger logger = LoggerFactory.getLogger(AppUserServiceImpl.class);
+
+    public AppUserServiceImpl(MailService mailService) {
+        this.mailService = mailService;
+    }
+
 
     @Override
     public GenericResponse registration(RegisterDto registerDto) {
@@ -242,7 +246,7 @@ public class AppUserServiceImpl implements AppUserService {
         registerDto.setId(user.getId());
         registerDto.setEmail(user.getEmail());
 
-
+        mailService.sendMail("tusar.c@quickheal.com","Testing mail","Soigolo ki ");
         return new GenericResponse(HttpStatus.OK, registerDto);
     }
 

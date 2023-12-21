@@ -1,6 +1,5 @@
 package com.examportal.examPortal.Service.ServiceImpl;
 
-import com.examportal.examPortal.Model.MailStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,14 +14,14 @@ public class MailService {
     @Value("$(spring.mail.username)")
     private String mailFrom;
 
-    public void sendMail(String mail, MailStructure mailStructure) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(mailFrom);
-        simpleMailMessage.setSubject(mailStructure.getSubject());
-        simpleMailMessage.setText(mailStructure.getMessage());
-        simpleMailMessage.setTo(mail);
+    public void sendMail(String to, String subject, String body) {
 
-        javaMailSender.send(simpleMailMessage);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(mailFrom);
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
 
+        javaMailSender.send(message);
     }
 }
