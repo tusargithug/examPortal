@@ -62,13 +62,18 @@ public class AppUserServiceImpl implements AppUserService {
         if (!registerDto.getLastName().matches(formatForLastName)) {
             return new GenericResponse(HttpStatus.BAD_REQUEST, "Invalid last name format");
         }
+        Optional<AppUser> appUserOptional = userRepo.findByEmail(registerDto.getEmail());
+        if(appUserOptional.isPresent()){
+            return new GenericResponse(HttpStatus.BAD_REQUEST, "Email is already register");
+        }
+        String email = registerDto.getEmail();
         AppUser user = new AppUser();
 
         user.setFirstName(registerDto.getFirstName());
         user.setLastName(registerDto.getLastName());
         user.setRollNo(registerDto.getRollNo());
         user.setMobileNo(registerDto.getMobileNo());
-        user.setEmail(registerDto.getEmail());
+        user.setEmail(email);
         user.setPassword(registerDto.getPassword());
         if (registerDto.getPassword().matches(registerDto.getConfirmPassword())) {
             user.setPassword(registerDto.getPassword());
@@ -80,8 +85,7 @@ public class AppUserServiceImpl implements AppUserService {
         user.setUserName(registerDto.getUserName());
         user.setRoleType(Role.valueOf(registerDto.getRoleType()));
         userRepo.save(user);
-        String subject = "This is your registration otp";
-    //    mailService.sendMail("Otp generated",);
+        mailService.sendMail(email,"Exam Portal registration","Welcome to Our Exam portal");
         return new GenericResponse(HttpStatus.OK, "Registration done");
     }
 
@@ -246,7 +250,6 @@ public class AppUserServiceImpl implements AppUserService {
         registerDto.setId(user.getId());
         registerDto.setEmail(user.getEmail());
 
-        mailService.sendMail("tusar.c@quickheal.com","Testing mail","Soigolo ki ");
         return new GenericResponse(HttpStatus.OK, registerDto);
     }
 

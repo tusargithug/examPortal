@@ -8,7 +8,6 @@ import com.examportal.examPortal.Service.ServiceImpl.AppUserServiceImpl;
 import com.examportal.examPortal.Service.ServiceImpl.MailService;
 import com.examportal.examPortal.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-//      import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
